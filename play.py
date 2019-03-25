@@ -1,13 +1,13 @@
 import pexpect
 
-player1='flat_mc_player/Gomoku3.py'
+player1='gomoku4/Gomoku4.py'
 player2='random_player/Gomoku2.py'
 
 win1=0
 win2=0
 numTimeout=0
 draw=0
-timeout=60
+timeout=2
 
 def getMove(p,color):
     p.sendline('genmove '+color)
@@ -101,5 +101,5 @@ def playGames(numGame=10):
 def outputResult():
     print('player1 win',win1,'player2 win',win2,'draw',draw)
 
-playGames()
+playGames(1)
 outputResult()

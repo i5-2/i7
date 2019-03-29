@@ -331,6 +331,7 @@ class GtpConnection():
             self.board=self.sboard
             signal.alarm(0)
         except Exception as e:
+            print(e)
             move=self.go_engine.best_move
 
         if move == PASS:

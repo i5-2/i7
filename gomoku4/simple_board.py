@@ -12,8 +12,9 @@ The board uses a 1-dimensional representation with padding
 import numpy as np
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        PASS, is_black_white, coord_to_point, where1d, \
-                       MAXSIZE, NULLPOINT
+                       MAXSIZE, NULLPOINT, is_black_white_empty
 import alphabeta
+import random
 
 class SimpleGoBoard(object):
 
@@ -87,6 +88,14 @@ class SimpleGoBoard(object):
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
+        self.zobrist = []
+
+        # https://en.wikipedia.org/wiki/Zobrist_hashing
+        for j in range(0, 3):
+            colour_list = []
+            for i in range(0, len(self.board)):
+                colour_list.append(random.randint(0, 2147483647))
+            self.zobrist.append(colour_list)
 
     def copy(self):
         b = SimpleGoBoard(self.size)
@@ -307,6 +316,14 @@ class SimpleGoBoard(object):
         """ List of all four neighbors of the point """
         return [point - 1, point + 1, point - self.NS, point + self.NS]
 
+    def diag_neighbours_of_color(self, point, color):
+        nbc = []
+        neighbours = self._diag_neighbors(point)
+        for nb in neighbours:
+            if self.get_color(nb) == color:
+                nbc.append(nb)
+        return nbc
+
     def _diag_neighbors(self, point):
         """ List of all four diagonal neighbors of point """
         return [point - self.NS - 1, 
@@ -523,3 +540,75 @@ class SimpleGoBoard(object):
             return None
         else:
             return list(moveSet[i])
+
+    def score(self, komi):
+        """ Score """
+        black_score = 0
+        white_score = 0
+        counted = []
+        for x in range(1, self.size+1):
+            for y in range(1, self.size+1):
+                point = coord_to_point(x,y, self.size)
+                if point in counted:
+                    continue
+                color = self.get_color(point)
+                assert color != BORDER
+                if color == BLACK:
+                    black_score += 1
+                    continue
+                if color == WHITE:
+                    white_score += 1
+                    continue
+                empty_block = where1d(self.connected_component(point))
+                black_flag = False
+                white_flag = False
+                for p in empty_block:
+                    counted.append(p)
+                    p_neighbors = self._diag_neighbors(p)
+                    found_black = self.board[p_neighbors]==BLACK
+                    found_white = self.board[p_neighbors]==WHITE
+                    if found_black.any():
+                        black_flag = True
+                    if found_white.any():
+                        white_flag = True
+                    if black_flag and white_flag:
+                        break
+                if black_flag and not white_flag:
+                    black_score += len(empty_block)
+                if white_flag and not black_flag:
+                    white_score += len(empty_block)
+
+        print(self.code())
+        if black_score > white_score:
+            return BLACK, black_score-white_score
+        
+        if white_score > black_score:
+            return WHITE, white_score-black_score
+
+        if black_score == white_score:
+            return None, 0
+
+    def connected_component(self, point):
+        """
+        Find the connected component of the given point.
+        """
+        marker = np.full(self.maxpoint, False, dtype = bool)
+        pointstack = [point]
+        color = self.get_color(point)
+        assert is_black_white_empty(color)
+        marker[point] = True
+        while pointstack:
+            p = pointstack.pop()
+            neighbors = self.diag_neighbours_of_color(p, color)
+            for nb in neighbors:
+                if not marker[nb]:
+                    marker[nb] = True
+                    pointstack.append(nb)
+        return marker
+
+    def code(self):
+        h = 0
+        for i in range(0, len(self.board)):
+            colour = self.board[i]
+            h = h ^ self.zobrist[colour - 1][i]
+        return h

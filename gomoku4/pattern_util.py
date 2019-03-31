@@ -189,6 +189,8 @@ class PatternUtil(object):
                 break
             board.play_move_gomoku(move, color)
         #winner,_ = board.score(komi)
+        print(str(GoBoardUtil.get_twoD_board(board)))
+        print("!!!")
         return board.check_game_end_gomoku()[1]
 
     @staticmethod

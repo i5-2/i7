@@ -330,8 +330,7 @@ class GtpConnection():
             move = self.go_engine.get_move(self.board, color)
             self.board=self.sboard
             signal.alarm(0)
-        except KeyError as e:
-            # TODO: Exception
+        except Exception as e:
             print(e)
             move=self.go_engine.best_move
 

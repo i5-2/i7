@@ -309,6 +309,7 @@ class SimpleGoBoard(object):
 
     def all_neighbours_of_colour(self, point, color):
         nbc = []
+        # TODO: does self.neighbors actually work?
         neighbours = self._diag_neighbors(point) + self.neighbors[point]
         for nb in neighbours:
             if self.get_color(nb) == color:

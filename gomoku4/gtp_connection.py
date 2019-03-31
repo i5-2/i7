@@ -331,7 +331,7 @@ class GtpConnection():
             self.board=self.sboard
             signal.alarm(0)
         except KeyError as e:
-            #Exception
+            # TODO: Exception
             print(e)
             move=self.go_engine.best_move
 

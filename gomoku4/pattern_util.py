@@ -175,13 +175,13 @@ class PatternUtil(object):
         for _ in range(limit):
             color = board.current_player
             if simulation_policy == 'random':
-                move = GoBoardUtil.generate_random_move(board,color,True)
+                move = GoBoardUtil.generate_random_move_gomoku(board)
             elif simulation_policy == 'rulebased':
                 move = PatternUtil.generate_move_with_filter(board,use_pattern,check_selfatari)
             else:
                 assert simulation_policy == 'prob'
                 move = PatternUtil.generate_move_with_feature_based_probs(board)
-            board.play_move(move, color)
+            board.play_move_gomoku(move, color)
             if move == PASS:
                 nuPasses += 1
             else:

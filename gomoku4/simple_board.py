@@ -538,7 +538,6 @@ class SimpleGoBoard(object):
         black_score = 0
         white_score = 0
         counted = []
-        #print(self.code())
         for x in range(1, self.size+1):
             for y in range(1, self.size+1):
                 point = coord_to_point(x,y, self.size)
@@ -571,7 +570,8 @@ class SimpleGoBoard(object):
                 if white_flag and not black_flag:
                     white_score += len(empty_block)
 
-        print(self.code())
+        print(black_score, white_score)
+        #print(self.code())
         if black_score > white_score:
             return BLACK, black_score-white_score
         

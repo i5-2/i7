@@ -538,7 +538,7 @@ class SimpleGoBoard(object):
         black_score = 0
         white_score = 0
         counted = []
-        print(self.code())
+        #print(self.code())
         for x in range(1, self.size+1):
             for y in range(1, self.size+1):
                 point = coord_to_point(x,y, self.size)

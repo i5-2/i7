@@ -194,5 +194,6 @@ class GoBoardUtil(object):
         h = 0
         for i in range(0, len(board)):
             colour = board[i]
-            h = h ^ zobrist[colour - 1][i]
+            if (colour != BORDER):
+                h = h ^ zobrist[colour][i]
         return h

@@ -175,6 +175,8 @@ class PatternUtil(object):
         for _ in range(limit):
             finished, winner = board.check_game_end_gomoku()
             if (finished):
+                print(str(GoBoardUtil.get_twoD_board(board)))
+                print("@@@@@")
                 return winner
             color = board.current_player
             if simulation_policy == 'random':

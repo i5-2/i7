@@ -173,6 +173,9 @@ class PatternUtil(object):
             raise TypeError('Unexpected **kwargs: %r' % kwargs)
         nuPasses = 0
         for _ in range(limit):
+            finished, winner = board.check_game_end_gomoku()
+            if (finished):
+                return winner
             color = board.current_player
             if simulation_policy == 'random':
                 move = GoBoardUtil.generate_random_move_gomoku(board)
@@ -185,8 +188,8 @@ class PatternUtil(object):
             if move == PASS:
                 break
             board.play_move_gomoku(move, color)
-        winner,_ = board.score(komi)
-        return winner
+        #winner,_ = board.score(komi)
+        return board.check_game_end_gomoku()[1]
 
     @staticmethod
     def generate_moves_with_feature_based_probs(board):

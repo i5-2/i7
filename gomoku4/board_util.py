@@ -118,13 +118,14 @@ class GoBoardUtil(object):
         generate a list of all legal moves on the board for gomoku, where
         all empty positions are legal.
         """
-        moves = board.get_empty_points()
-        legal_moves = []
-        for move in moves:
-            legal_moves.append(move)
-        shuffle(legal_moves)
-        return legal_moves
-            
+        # moves = board.get_empty_points()
+        # legal_moves = []
+        # for move in moves:
+            # legal_moves.append(move)
+        # shuffle(legal_moves)
+        # return legal_moves
+        return board.get_empty_points()
+
     @staticmethod
     def generate_random_move_gomoku(board):
         """

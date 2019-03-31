@@ -1,4 +1,4 @@
-from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
+from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS
 #from profilehooks import profile
 
 START_DEPTH = 2
@@ -84,7 +84,8 @@ def solve(board, sboard):
             #    haveDraw=True
             elif (result > sboard.get_best_move_score()):
                 sboard.set_best_move(result, m)
-    return haveDraw,"NoMove"
+    print(sboard.get_best_move_score(), sboard.get_best_move(), "No move")
+    return haveDraw, PASS
 
 
     """

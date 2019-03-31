@@ -784,8 +784,8 @@ class SimpleGoBoard(object):
         for point in current_points:
             score += self.point_check_game_end_gomoku_heur(point)
     
-        for point in enemy_points:
-            score -= self.point_check_game_end_gomoku_heur(point)
+        #for point in enemy_points:
+        #    score -= self.point_check_game_end_gomoku_heur(point)
         
         if (score == 1):
             score += 1

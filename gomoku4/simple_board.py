@@ -28,25 +28,7 @@ class SimpleGoBoard(object):
         Check whether it is legal for color to play on point
         """
         assert is_black_white(color)
-        # Special cases
-        if point == PASS:
-            return True
-        elif self.board[point] != EMPTY:
-            return False
-        if point == self.ko_recapture:
-            return False
-            
-        # General case: detect captures, suicide
-        opp_color = GoBoardUtil.opponent(color)
-        self.board[point] = color
-        legal = True
-        has_capture = self._detect_captures(point, opp_color)
-        if not has_capture and not self._stone_has_liberty(point):
-            block = self._block_of(point)
-            if not self._has_liberty(block): # suicide
-                legal = False
-        self.board[point] = EMPTY
-        return legal
+        return (point == PASS) or (self.board[point] != EMPTY):
 
     def _detect_captures(self, point, opp_color):
         """

@@ -43,7 +43,7 @@ class TreeNode(object):
         moves = GoBoardUtil.generate_legal_moves_gomoku(board)
         for move in moves:
             if move not in self._children:
-                if board.is_legal(move, color) and not board.is_eye(move, color):
+                if board.is_legal(move, color):
                     self._children[move] = TreeNode(self)
                     self._children[move]._move = move
         self._children[PASS] = TreeNode(self)

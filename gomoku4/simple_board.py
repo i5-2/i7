@@ -28,7 +28,7 @@ class SimpleGoBoard(object):
         Check whether it is legal for color to play on point
         """
         assert is_black_white(color)
-        return (point == PASS) or (self.board[point] != EMPTY)
+        return (point == PASS) or (self.board[point] == EMPTY)
 
     def _detect_captures(self, point, opp_color):
         """

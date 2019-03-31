@@ -192,12 +192,10 @@ class GoBoardUtil(object):
     @staticmethod
     def get_state_code(board):
         h = 0
+        j = 0
         for i in range(0, len(board)):
             colour = board[i]
             if (colour != BORDER):
-                print(colour)
-                print(i)
-                print(zobrist)
-                print(zobrist[colour])
-                h = h ^ zobrist[colour][i]
+                h = h ^ zobrist[colour][j]
+                j += 1
         return h

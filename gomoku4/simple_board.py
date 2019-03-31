@@ -747,10 +747,10 @@ class SimpleGoBoard(object):
         return score
     
     def point_check_game_end_gomoku_heur(self, point):
-        return (self._point_direction_check_connect_gomoko_heur(point, 1))
-            + (self._point_direction_check_connect_gomoko_heur(point, self.NS))
-            + (self._point_direction_check_connect_gomoko_heur(point, self.NS + 1))
-            + (self._point_direction_check_connect_gomoko_heur(point, self.NS - 1))
+        return (self._point_direction_check_connect_gomoko_heur(point, 1)) \
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS)) \
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS + 1)) \
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS - 1)) \
     
     def get_heuristic_score(self):
         score = 0
@@ -760,7 +760,7 @@ class SimpleGoBoard(object):
         enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
         
         for point in current_points:
-            score += self.point_check_game_end_gomoku_heur(point):
+            score += self.point_check_game_end_gomoku_heur(point)
     
         for point in enemy_points:
             score -= self.point_check_game_end_gomoku_heur(point)

@@ -765,6 +765,7 @@ class SimpleGoBoard(object):
             elif (string[i] == "o"):
                 score -= 1
 
+        print(score, string)
         return score
     
     def point_check_game_end_gomoku_heur(self, point):
@@ -785,6 +786,11 @@ class SimpleGoBoard(object):
     
         for point in enemy_points:
             score -= self.point_check_game_end_gomoku_heur(point)
+        
+        if (score == 1):
+            score += 1
+        elif (score == -1):
+            score -= 1
         
         return score
         

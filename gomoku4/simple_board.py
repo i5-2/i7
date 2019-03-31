@@ -87,6 +87,7 @@ class SimpleGoBoard(object):
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
+        self.last_played_point = None
 
     def copy(self):
         b = SimpleGoBoard(self.size)
@@ -358,6 +359,7 @@ class SimpleGoBoard(object):
             return False
         self.board[point] = color
         self.current_player = GoBoardUtil.opponent(color)
+        self.last_played_point = point
         return True
         
     def _point_direction_check_connect_gomoko(self, point, shift):
@@ -413,9 +415,15 @@ class SimpleGoBoard(object):
         return False
     
     def check_game_end_gomoku(self):
+        if (self.last_played_point == None):
+            return False, None
+        elif (self.point_check_game_end_gomoku(self.last_played_point)):
+            return True, self.board[self.last_played_point]
+        return False, None
+        
         """
             Check if the game ends for the game of Gomoku.
-            """
+            
         white_points = where1d(self.board == WHITE)
         black_points = where1d(self.board == BLACK)
         
@@ -427,7 +435,7 @@ class SimpleGoBoard(object):
             if self.point_check_game_end_gomoku(point):
                 return True, BLACK
 
-        return False, None
+        return False, None"""
 
     def solve(self):
         result, move, drawMove = alphabeta.solve(self)

@@ -173,11 +173,9 @@ class PatternUtil(object):
             raise TypeError('Unexpected **kwargs: %r' % kwargs)
         nuPasses = 0
         for _ in range(limit):
-            print(_)
             finished, winner = board.check_game_end_gomoku()
             if (finished):
                 return winner
-            print(_)
             color = board.current_player
             if simulation_policy == 'random':
                 move = GoBoardUtil.generate_random_move_gomoku(board)

@@ -7,7 +7,7 @@ win1=0
 win2=0
 numTimeout=0
 draw=0
-timeout=2
+timeout=60
 
 def getMove(p,color):
     p.sendline('genmove '+color)
@@ -40,7 +40,6 @@ def playSingleGame(alternative=False):
     while 1:
         if sw==0:
             move=getMove(p1,'b')
-            print(move)
             assert(move!='pass')
             if move=='resign':
                 result=2

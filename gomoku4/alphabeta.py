@@ -78,6 +78,7 @@ def solve(board):
             #print(result)
             undo(board,m)
             print(result)
+            print(board.get_best_move_score())
             if(result==INFINITY):
                 return True,m
             #elif(result==0):

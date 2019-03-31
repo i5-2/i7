@@ -97,7 +97,7 @@ def run():
     start the gtp connection and wait for commands.
     """
     board = SimpleGoBoard(7)
-    con = GtpConnection(GomokuSimulationPlayer(5000, "random", False, "None"), board)
+    con = GtpConnection(GomokuSimulationPlayer(300, "random", False, "None"), board)
     con.start_connection()
 
 if __name__=='__main__':

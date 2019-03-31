@@ -175,9 +175,8 @@ class PatternUtil(object):
         for _ in range(limit):
             finished, winner = board.check_game_end_gomoku()
             if (finished):
-                print(str(GoBoardUtil.get_twoD_board(board)))
-                print("@@@@@")
                 return winner
+
             color = board.current_player
             if simulation_policy == 'random':
                 move = GoBoardUtil.generate_random_move_gomoku(board)
@@ -191,8 +190,6 @@ class PatternUtil(object):
                 break
             board.play_move_gomoku(move, color)
         #winner,_ = board.score(komi)
-        print(str(GoBoardUtil.get_twoD_board(board)))
-        print("!!!")
         return board.check_game_end_gomoku()[1]
 
     @staticmethod

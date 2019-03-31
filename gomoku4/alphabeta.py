@@ -77,6 +77,7 @@ def solve(board, sboard):
             #print(GoBoardUtil.get_twoD_board(board))
             #print(result)
             undo(board,m)
+            print(m, result, sboard.get_best_move_score())
             if(result==INFINITY):
                 return True,m
             #elif(result==0):

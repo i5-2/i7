@@ -43,9 +43,9 @@ class TreeNode(object):
         moves = GoBoardUtil.generate_legal_moves_gomoku(board)
         for move in moves:
             if move not in self._children:
-                if board.is_legal(move, color):
-                    self._children[move] = TreeNode(self)
-                    self._children[move]._move = move
+                #if board.is_legal(move, color):
+                self._children[move] = TreeNode(self)
+                self._children[move]._move = move
         self._children[PASS] = TreeNode(self)
         self._children[PASS]._move = PASS
         self._expanded = True
@@ -126,7 +126,7 @@ class MCTS(object):
                 assert board.is_legal(move, color)
             if move == PASS:
                 move = None
-            board.play_move(move, color)
+            board.play_move_gomoku(move, color)
             color = GoBoardUtil.opponent(color) 
             node = next_node
         assert node.is_leaf()

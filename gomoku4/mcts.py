@@ -150,10 +150,10 @@ class MCTS(object):
                 random_simulation=self.simulation_policy,
                 use_pattern = self.use_pattern,
                 check_selfatari= self.check_selfatari)        
-        if winner == toplay:
+        if winner == BLACK:
             return 1
-        elif (winner == GoBoardUtil.opponent(toplay)):
-            return -1
+        #elif (winner == GoBoardUtil.opponent(toplay)):
+        #    return -1
         else:
             return 0
 

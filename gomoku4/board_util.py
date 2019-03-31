@@ -15,6 +15,14 @@ BLACK = 1
 WHITE = 2
 BORDER = 3
 
+zobrist = []
+# https://en.wikipedia.org/wiki/Zobrist_hashing
+for j in range(0, 3):
+    colour_list = []
+    for i in range(0, 7):
+        colour_list.append(random.randint(0, 18446744073709551616))
+    zobrist.append(colour_list)
+
 def is_black_white(color):
     return color == BLACK or color == WHITE
 
@@ -180,3 +188,11 @@ class GoBoardUtil(object):
             start = goboard.row_start(row + 1)
             board2d[row, :] = goboard.board[start : start + size]
         return board2d
+        
+    @staticmethod
+    def get_state_code(board):
+        h = 0
+        for i in range(0, len(board)):
+            colour = board[i]
+            h = h ^ zobrist[colour - 1][i]
+        return h

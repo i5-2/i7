@@ -12,7 +12,7 @@ The board uses a 1-dimensional representation with padding
 import numpy as np
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        PASS, is_black_white, coord_to_point, where1d, \
-                       MAXSIZE, NULLPOINT, is_black_white_empty
+                       MAXSIZE, NULLPOINT, is_black_white_empty, get_state_code
 import alphabeta
 import random
 
@@ -88,14 +88,6 @@ class SimpleGoBoard(object):
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
-        self.zobrist = []
-
-        # https://en.wikipedia.org/wiki/Zobrist_hashing
-        for j in range(0, 3):
-            colour_list = []
-            for i in range(0, len(self.board)):
-                colour_list.append(random.randint(0, 2147483647))
-            self.zobrist.append(colour_list)
 
     def copy(self):
         b = SimpleGoBoard(self.size)
@@ -316,9 +308,9 @@ class SimpleGoBoard(object):
         """ List of all four neighbors of the point """
         return [point - 1, point + 1, point - self.NS, point + self.NS]
 
-    def diag_neighbours_of_color(self, point, color):
+    def all_neighbours_of_colour(self, point, color):
         nbc = []
-        neighbours = self._diag_neighbors(point)
+        neighbours = self._diag_neighbors(point) + self.neighbors[point]
         for nb in neighbours:
             if self.get_color(nb) == color:
                 nbc.append(nb)
@@ -546,6 +538,7 @@ class SimpleGoBoard(object):
         black_score = 0
         white_score = 0
         counted = []
+        print(self.code())
         for x in range(1, self.size+1):
             for y in range(1, self.size+1):
                 point = coord_to_point(x,y, self.size)
@@ -599,7 +592,7 @@ class SimpleGoBoard(object):
         marker[point] = True
         while pointstack:
             p = pointstack.pop()
-            neighbors = self.diag_neighbours_of_color(p, color)
+            neighbors = self.all_neighbours_of_colour(p, color)
             for nb in neighbors:
                 if not marker[nb]:
                     marker[nb] = True
@@ -607,8 +600,4 @@ class SimpleGoBoard(object):
         return marker
 
     def code(self):
-        h = 0
-        for i in range(0, len(self.board)):
-            colour = self.board[i]
-            h = h ^ self.zobrist[colour - 1][i]
-        return h
+        return get_state_code(self.board)

@@ -77,6 +77,7 @@ def solve(board):
             #print(GoBoardUtil.get_twoD_board(board))
             #print(result)
             undo(board,m)
+            print(result)
             if(result==INFINITY):
                 return True,m
             elif(result==0):

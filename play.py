@@ -40,6 +40,7 @@ def playSingleGame(alternative=False):
     while 1:
         if sw==0:
             move=getMove(p1,'b')
+            print(move)
             assert(move!='pass')
             if move=='resign':
                 result=2

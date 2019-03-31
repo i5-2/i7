@@ -12,7 +12,7 @@ The board uses a 1-dimensional representation with padding
 import numpy as np
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        PASS, is_black_white, coord_to_point, where1d, \
-                       MAXSIZE, NULLPOINT, is_black_white_empty, get_state_code
+                       MAXSIZE, NULLPOINT, is_black_white_empty
 import alphabeta
 
 class SimpleGoBoard(object):
@@ -599,4 +599,4 @@ class SimpleGoBoard(object):
         return marker
 
     def code(self):
-        return get_state_code(self.board)
+        return GoBoardUtil.get_state_code(self.board)

@@ -759,11 +759,17 @@ class SimpleGoBoard(object):
         current_points = where1d(self.board == self.current_player)
         enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
         
+        temp_score = 0
         for point in current_points:
-            score += self.point_check_game_end_gomoku_heur(point)
+            temp_score += self.point_check_game_end_gomoku_heur(point)
+        if (len(current_points) > 0):
+            score = temp_score / len(current_points)
     
+        temp_score = 0
         for point in enemy_points:
-            score -= self.point_check_game_end_gomoku_heur(point)
+            temp_score -= 0.4 * self.point_check_game_end_gomoku_heur(point)
+        if (len(enemy_points) > 0):
+            score += temp_score / len(enemy_points)
         
         return score
         

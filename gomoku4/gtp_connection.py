@@ -328,7 +328,7 @@ class GtpConnection():
         try:
             signal.alarm(int(self.timelimit))
             self.sboard = self.board.copy()
-            result, move = alphabeta.solve(self.board)
+            result, move = alphabeta.solve(self.board, self.sboard)
             #winner, move = GoBoardUtil.solve_gomoku(self.board, color)
             self.board=self.sboard
             signal.alarm(0)

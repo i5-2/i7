@@ -53,11 +53,11 @@ def alphabeta(board,alpha,beta, d):
 if have winning move, return _,winning_move
 else return have_draw,"NoMove"
 """
-def solve(board):
+def solve(board, sboard):
     result=game_end(board)
     if (result!=None):
         return result,"First"
-    board.set_best_move(-INFINITY, None)
+    sboard.set_best_move(-INFINITY, None)
     alpha,beta=-INFINITY,INFINITY
     haveDraw=False
     solvePoint=board.list_solve_point()
@@ -77,13 +77,12 @@ def solve(board):
             #print(GoBoardUtil.get_twoD_board(board))
             #print(result)
             undo(board,m)
-            print(board.get_best_move_score(), board.get_best_move(), result, m)
             if(result==INFINITY):
                 return True,m
             #elif(result==0):
             #    haveDraw=True
-            elif (result > board.get_best_move_score()):
-                board.set_best_move(result, m)
+            elif (result > sboard.get_best_move_score()):
+                sboard.set_best_move(result, m)
     return haveDraw,"NoMove"
 
 

@@ -80,8 +80,8 @@ def solve(board):
             print(result)
             if(result==INFINITY):
                 return True,m
-            elif(result==0):
-                haveDraw=True
+            #elif(result==0):
+            #    haveDraw=True
             elif (result > board.get_best_move_score()):
                 board.set_best_move(result, m)
     return haveDraw,"NoMove"

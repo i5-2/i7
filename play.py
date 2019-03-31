@@ -101,5 +101,5 @@ def playGames(numGame=10):
 def outputResult():
     print('player1 win',win1,'player2 win',win2,'draw',draw)
 
-playGames(1)
+playGames()
 outputResult()

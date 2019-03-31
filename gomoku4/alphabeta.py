@@ -3,6 +3,8 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
 
 START_DEPTH = 2
 
+INFINITY = 10000000000
+
 def undo(board,move):
     board.board[move]=EMPTY
     board.current_player=GoBoardUtil.opponent(board.current_player)
@@ -55,8 +57,8 @@ def solve(board):
     result=game_end(board)
     if (result!=None):
         return result,"First"
-    board.set_best_move(-10000000000, None)
-    alpha,beta=-1,1
+    board.set_best_move(-INFINITY, None)
+    alpha,beta=-INFINITY,INFINITY
     haveDraw=False
     solvePoint=board.list_solve_point()
     if solvePoint:
@@ -75,7 +77,7 @@ def solve(board):
             #print(GoBoardUtil.get_twoD_board(board))
             #print(result)
             undo(board,m)
-            if(result==1):
+            if(result==INFINITY):
                 return True,m
             elif(result==0):
                 haveDraw=True

@@ -705,6 +705,7 @@ class SimpleGoBoard(object):
 
     def _point_direction_check_connect_gomoko_heur(self, point, shift):
         color = self.board[point]
+        opp = GoBoardUtil.opponent(color))
         d = shift
         p = point
         right_str = ""
@@ -717,8 +718,10 @@ class SimpleGoBoard(object):
                 right_str += "x"
             elif (pt == EMPTY):
                 right_str += "."
-            else:
+            elif (pt == opp):
                 right_str += "o"
+            else:
+                break
         d = -d
         p = point
         left_str = ""
@@ -729,8 +732,10 @@ class SimpleGoBoard(object):
                 left_str += "x"
             elif (pt == EMPTY):
                 left_str += "."
-            else:
+            elif (pt == opp):
                 left_str += "o"
+            else:
+                break
         
         string = left_str[::-1] + right_str
         

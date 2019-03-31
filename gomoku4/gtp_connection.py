@@ -58,7 +58,7 @@ class GtpConnection():
             "policy": self.set_playout_policy, 
             "policy_moves": self.display_pattern_moves
         }
-        self.timelimit=60
+        self.timelimit=55
 
         # used for argument checking
         # values: (required number of arguments, 
@@ -330,7 +330,8 @@ class GtpConnection():
             move = self.go_engine.get_move(self.board, color)
             self.board=self.sboard
             signal.alarm(0)
-        except Exception as e:
+        except KeyError as e:
+            #Exception
             print(e)
             move=self.go_engine.best_move
 

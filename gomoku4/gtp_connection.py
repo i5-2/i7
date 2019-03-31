@@ -334,6 +334,7 @@ class GtpConnection():
             signal.alarm(0)
         except Exception as e:
             move=self.board.get_best_move()
+            print(e)
 
         if move == PASS:
             self.respond("pass")

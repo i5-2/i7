@@ -750,7 +750,7 @@ class SimpleGoBoard(object):
                         score += 100
                     elif (enemy):
                         score -= 100
-                    if (i + 3 and string[i+2] == string[i+3]):
+                    if (i + 3 < str_len and string[i+2] == string[i+3]):
                         if (ours):
                             score += 1000
                         elif (enemy):

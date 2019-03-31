@@ -337,6 +337,7 @@ class GtpConnection():
             if (move == PASS):
                 # TODO: just pick a random move
                 pass
+            print(e)
 
         if move == PASS:
             self.respond("pass")

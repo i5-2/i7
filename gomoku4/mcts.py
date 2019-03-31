@@ -46,8 +46,8 @@ class TreeNode(object):
                 #if board.is_legal(move, color):
                 self._children[move] = TreeNode(self)
                 self._children[move]._move = move
-        self._children[PASS] = TreeNode(self)
-        self._children[PASS]._move = PASS
+        #self._children[PASS] = TreeNode(self)
+        #self._children[PASS]._move = PASS
         self._expanded = True
 
     def select(self, exploration, max_flag):
@@ -122,10 +122,10 @@ class MCTS(object):
             # Greedily select next move.                
             max_flag = color == BLACK
             move, next_node = node.select(self.exploration,max_flag)
-            if move!=PASS:
-                assert board.is_legal(move, color)
-            if move == PASS:
-                move = None
+            #if move!=PASS:
+            assert (move != PASS)
+            assert board.is_legal(move, color)
+            
             board.play_move_gomoku(move, color)
             color = GoBoardUtil.opponent(color) 
             node = next_node

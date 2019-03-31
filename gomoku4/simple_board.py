@@ -762,10 +762,9 @@ class SimpleGoBoard(object):
                             score -= 1000
             elif (string[i] == "x"):
                 score += 1
-            elif (string[i] == "o"):
-                score -= 1
+            #elif (string[i] == "o"):
+            #    score -= 1
 
-        print(score, string)
         return score
     
     def point_check_game_end_gomoku_heur(self, point):
@@ -779,7 +778,7 @@ class SimpleGoBoard(object):
         
         # TODO: use a transposition table here
         current_points = where1d(self.board == self.current_player)
-        enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
+        #enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
         
         for point in current_points:
             score += self.point_check_game_end_gomoku_heur(point)

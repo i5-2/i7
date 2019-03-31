@@ -1,7 +1,7 @@
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
 #from profilehooks import profile
 
-START_DEPTH = 1
+START_DEPTH = 2
 
 INFINITY = 10000000000
 
@@ -14,7 +14,7 @@ def game_end(board):
     moves = board.get_empty_points()
     board_full = (len(moves) == 0)
     if game_end:
-        return 1 if winner == board.current_player else -1
+        return INFINITY if winner == board.current_player else -INFINITY
     if board_full:
         return 0
     return None

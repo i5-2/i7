@@ -1,4 +1,4 @@
-from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, WINNER_SCORE
+from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
 #from profilehooks import profile
 
 START_DEPTH = 2

@@ -14,6 +14,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        PASS, is_black_white, coord_to_point, where1d, \
                        MAXSIZE, NULLPOINT
 import alphabeta
+import collections
 
 WINNER_SCORE = 100000
 
@@ -702,12 +703,68 @@ class SimpleGoBoard(object):
 
         return myWins, theirWins, my2mWins, their2mWins
 
-    def get_heuristic_score(self):
-        finished, winner = self.check_game_end_gomoku()
-        if (finished):
-            return WINNER_SCORE if (winner == self.current_player) else -WINNER_SCORE
+    def _point_direction_check_connect_gomoko_heur(self, point, shift):
+        color = self.board[point]
+        d = shift
+        p = point
+        right_str = ""
+        
+        # TODO: optimize
+        while True:
+            p = p + d
+            pt = self.board[p]
+            if pt == color:
+                right_str += "x"
+            elif (pt == EMPTY):
+                right_str += "."
+            else:
+                right_str += "?"
+                break
+        d = -d
+        p = point
+        left_str = ""
+        while True:
+            p = p + d
+            pt = self.board[p]
+            if pt == color:
+                left_str += "x"
+            elif (pt == EMPTY):
+                left_str += "."
+            else:
+                left_str += "?"
+                break
+        
+        string = left_str[::-1] + right_str
+        
         score = 0
-        # TODO
+        for c in string:
+            if (c == "x"):
+                score += 1
+            elif (c == "."):
+                score += 0.5
+            elif (c == "?"):
+                score -= 1
+        return score
+    
+    def point_check_game_end_gomoku_heur(self, point):
+        return (self._point_direction_check_connect_gomoko_heur(point, 1))
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS))
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS + 1))
+            + (self._point_direction_check_connect_gomoko_heur(point, self.NS - 1))
+    
+    def get_heuristic_score(self):
+        score = 0
+        
+        # TODO: use a transposition table here
+        current_points = where1d(self.board == self.current_player)
+        enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
+        
+        for point in current_points:
+            score += self.point_check_game_end_gomoku_heur(point):
+    
+        for point in enemy_points:
+            score -= self.point_check_game_end_gomoku_heur(point)
+        
         return score
         
     # returns (score, moveThatCausedScore)

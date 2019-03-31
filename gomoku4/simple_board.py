@@ -708,7 +708,7 @@ class SimpleGoBoard(object):
         opp = GoBoardUtil.opponent(color)
         d = shift
         p = point
-        right_str = ""
+        right_str = "x"
         
         # TODO: optimize
         while True:

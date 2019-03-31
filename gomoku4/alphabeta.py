@@ -1,7 +1,7 @@
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
 #from profilehooks import profile
 
-START_DEPTH = 2
+START_DEPTH = 1
 
 INFINITY = 10000000000
 
@@ -66,7 +66,7 @@ def solve(board):
         board.play_move_gomoku(solvePoint[0],board.current_player)
         result=-alphabeta(board,-beta,-alpha, START_DEPTH)
         undo(board,solvePoint[0])
-        if(result==1):
+        if(result==INFINITY):
             return True,solvePoint[0]
         elif(result==0):
             haveDraw=True

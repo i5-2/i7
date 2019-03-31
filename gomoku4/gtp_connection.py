@@ -328,19 +328,17 @@ class GtpConnection():
         try:
             signal.alarm(int(self.timelimit))
             self.sboard = self.board.copy()
-            move = alphabeta.solve(self.board)
+            result, move = alphabeta.solve(self.board)
             #winner, move = GoBoardUtil.solve_gomoku(self.board, color)
             self.board=self.sboard
             signal.alarm(0)
-        except ValueError as e:
+        except Exception as e:
             #Exception
             move=self.board.get_best_move()
-            print(e)
 
         if move == PASS:
             self.respond("pass")
             return
-        print(move)
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
         if self.board.is_legal_gomoku(move, color):

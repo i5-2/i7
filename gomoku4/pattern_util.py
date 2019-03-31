@@ -181,13 +181,10 @@ class PatternUtil(object):
             else:
                 assert simulation_policy == 'prob'
                 move = PatternUtil.generate_move_with_feature_based_probs(board)
-            board.play_move_gomoku(move, color)
+            
             if move == PASS:
-                nuPasses += 1
-            else:
-                nuPasses = 0
-            if nuPasses >= 2:
                 break
+            board.play_move_gomoku(move, color)
         winner,_ = board.score(komi)
         return winner
 

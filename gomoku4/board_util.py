@@ -4,7 +4,7 @@ Utility functions for Go board.
 """
 
 import numpy as np
-from random import shuffle
+from random import shuffle, randint
 
 """
 Encoding of colors on and off a Go board.
@@ -20,7 +20,7 @@ zobrist = []
 for j in range(0, 3):
     colour_list = []
     for i in range(0, 7):
-        colour_list.append(random.randint(0, 18446744073709551616))
+        colour_list.append(randint(0, 18446744073709551616))
     zobrist.append(colour_list)
 
 def is_black_white(color):

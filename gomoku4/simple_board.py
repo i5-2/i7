@@ -14,7 +14,6 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        PASS, is_black_white, coord_to_point, where1d, \
                        MAXSIZE, NULLPOINT, is_black_white_empty, get_state_code
 import alphabeta
-import random
 
 class SimpleGoBoard(object):
 

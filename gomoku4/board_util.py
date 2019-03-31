@@ -176,3 +176,32 @@ class GoBoardUtil(object):
             start = goboard.row_start(row + 1)
             board2d[row, :] = goboard.board[start : start + size]
         return board2d
+
+    # returns (winner, move)
+    # winner = {BLACK, "draw", WHITE}
+    # move = {None, move}
+    @staticmethod
+    def solve_gomoku(board, player):
+        assert(player == BLACK or player == WHITE)
+        # Check if the game was solved already, return that player and None
+        gameInfo = board.check_game_end_gomoku()
+        if gameInfo[0]:
+            return gameInfo[1], None
+
+        # switch the player to who we want to play
+        oldPlayer = board.current_player
+        board.current_player = player
+
+        winner, move = board.negaAB(-1, 1, 2)
+        print(winner, move)
+        if winner == 1:
+            winner = player
+        elif winner == 0:
+            winner = "draw"
+        else: #winner == -1
+            winner = WHITE if player != WHITE else BLACK
+
+        # return the board to the original player
+        board.current_player = oldPlayer
+
+        return winner, move

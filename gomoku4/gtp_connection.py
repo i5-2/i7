@@ -13,6 +13,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
 import numpy as np
 import re
 import signal
+import alphabeta
 
 class GtpConnection():
 
@@ -58,7 +59,7 @@ class GtpConnection():
             "policy": self.set_playout_policy, 
             "policy_moves": self.display_pattern_moves
         }
-        self.timelimit=60
+        self.timelimit=55
 
         # used for argument checking
         # values: (required number of arguments, 
@@ -327,11 +328,12 @@ class GtpConnection():
         try:
             signal.alarm(int(self.timelimit))
             self.sboard = self.board.copy()
-            move = self.go_engine.get_move(self.board, color)
+            move = alphabeta.solve(self.board)
+            #winner, move = GoBoardUtil.solve_gomoku(self.board, color)
             self.board=self.sboard
             signal.alarm(0)
         except Exception as e:
-            move=self.go_engine.best_move
+            move=self.board.get_best_move()
 
         if move == PASS:
             self.respond("pass")

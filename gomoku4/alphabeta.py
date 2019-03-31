@@ -1,5 +1,7 @@
-from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER
+from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, WINNER_SCORE
 #from profilehooks import profile
+
+START_DEPTH = 2
 
 def undo(board,move):
     board.board[move]=EMPTY
@@ -15,7 +17,7 @@ def game_end(board):
         return 0
     return None
 
-def alphabeta(board,alpha,beta):
+def alphabeta(board,alpha,beta, d):
     #print(GoBoardUtil.get_twoD_board(board),alpha,beta)
     result=game_end(board)
     if (result!=None):
@@ -24,21 +26,24 @@ def alphabeta(board,alpha,beta):
     if solvePoint:
         #print(solvePoint[0])
         board.play_move_gomoku(solvePoint[0],board.current_player)
-        result=-alphabeta(board,-beta,-alpha)
+        result=-alphabeta(board,-beta,-alpha, d - 1)
         if(result>alpha):
             alpha=result
         undo(board,solvePoint[0])
         if(result>=beta):
             return beta
     else:
-        for m in GoBoardUtil.generate_legal_moves_gomoku(board):
-            board.play_move_gomoku(m,board.current_player)
-            result=-alphabeta(board,-beta,-alpha)
-            if(result>alpha):
-                alpha=result
-            undo(board,m)
-            if(result>=beta):
-                return beta
+        if (d <= 0):
+            return board.get_heuristic_score()
+        else:
+            for m in GoBoardUtil.generate_legal_moves_gomoku(board):
+                board.play_move_gomoku(m,board.current_player)
+                result=-alphabeta(board,-beta,-alpha, d - 1)
+                if(result>alpha):
+                    alpha=result
+                undo(board,m)
+                if(result>=beta):
+                    return beta
     return alpha
 
 #@profile
@@ -50,13 +55,14 @@ def solve(board):
     result=game_end(board)
     if (result!=None):
         return result,"First"
+    board.set_best_move(-10000000000, None)
     alpha,beta=-1,1
     haveDraw=False
     solvePoint=board.list_solve_point()
     if solvePoint:
         #print(solvePoint[0])
         board.play_move_gomoku(solvePoint[0],board.current_player)
-        result=-alphabeta(board,-beta,-alpha)
+        result=-alphabeta(board,-beta,-alpha, START_DEPTH)
         undo(board,solvePoint[0])
         if(result==1):
             return True,solvePoint[0]
@@ -65,7 +71,7 @@ def solve(board):
     else: 
         for m in GoBoardUtil.generate_legal_moves_gomoku(board):
             board.play_move_gomoku(m,board.current_player)
-            result=-alphabeta(board,-beta,-alpha)
+            result=-alphabeta(board,-beta,-alpha, START_DEPTH)
             #print(GoBoardUtil.get_twoD_board(board))
             #print(result)
             undo(board,m)
@@ -73,6 +79,9 @@ def solve(board):
                 return True,m
             elif(result==0):
                 haveDraw=True
+            elif (result != -1):
+                if (result > board.get_best_move_score()):
+                    board.set_best_move(score, m)
     return haveDraw,"NoMove"
 
 

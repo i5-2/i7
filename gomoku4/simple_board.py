@@ -15,6 +15,40 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, \
                        MAXSIZE, NULLPOINT
 import alphabeta
 
+WINNER_SCORE = 100000
+
+# 1 move win (aka "my turn my win")
+winDict = {
+    "x.xxx": True,
+    "xx.xx": True,
+    "xxx.x": True,
+    ".xxxx": True,
+    "xxxx.": True,
+
+    # must block these, if have none of the above
+    "o.ooo": False,
+    "oo.oo": False,
+    "ooo.o": False,
+    ".oooo": False,
+    "oooo.": False,
+}
+
+# 2 move wins (aka "my turn my win in 2 moves")
+# must be blocked if seen
+# (MyWin, how many steps back to go)
+threatDict = {
+    ".x.xx.": (True, 3),
+    ".xx.x.": (True, 2),
+    ".xxx..": (True, 1),
+    "..xxx.": (True, 4),
+
+    # must block these, if have none of the above
+    ".o.oo.": (False, 3),
+    ".oo.o.": (False, 2),
+    ".ooo..": (False, 1),
+    "..ooo.": (False, 4),
+}
+
 class SimpleGoBoard(object):
 
     def get_color(self, point):
@@ -87,6 +121,8 @@ class SimpleGoBoard(object):
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
+        self.best_move = None
+        self.best_move_score = -1000000
 
     def copy(self):
         b = SimpleGoBoard(self.size)
@@ -523,3 +559,244 @@ class SimpleGoBoard(object):
             return None
         else:
             return list(moveSet[i])
+
+    def getPointRep(self, cp, point):
+        value = self.board[point]
+        if (value == cp):
+            return "x"
+        elif (value == EMPTY):
+            return "."
+        elif (value == BORDER):
+            return "#"
+        return "o"
+
+    # dict to look up, winStr, player's list, opponent's list, point to add
+    def checkThreat(self, d, s, cpList, opList, p, step):
+        if s in d:
+            #print("found threat", s)
+            threat = d[s]
+            if threat[0]:
+                cpList.append(p - (threat[1] * step))
+            else:
+                opList.append(p - (threat[1] * step))
+
+    # dict to look up, winStr, player's list, opponent's list, point to add
+    def checkWin(self, d, s, cpList, opList, p, step):
+        if s in d:
+            #print("found win", s)
+            p = p + (s.index(".")-4)*step
+            if d[s]:
+                cpList.append(p)
+                return True
+            else:
+                opList.append(p)
+
+    # threat = opponent's win
+    # returns ([wins], [win threat], [2m wins], [2m win threats])
+    def winDetection(self):
+        myWins = []
+        theirWins = []
+        my2mWins = []
+        their2mWins = []
+
+        size = self.size
+        startPoint = size + 2
+
+        points = where1d(self.board == self.current_player)
+
+        #print("Horizontal")
+        # horizontal checks
+        for rowStart in range(startPoint, startPoint + size*size + 1, size+1):
+            winStr = ""
+            for point in range(rowStart, rowStart + size):
+                winStr += self.getPointRep(self.current_player, point)
+                # check 2-move wins
+                if len(winStr) == 6:
+                    self.checkThreat(threatDict, winStr, my2mWins, their2mWins, point, 1)
+                    # reduce the string to a 5-long string
+                    winStr = winStr[1:]
+
+                # check for 1-move wins
+                if len(winStr) == 5:
+                    if self.checkWin(winDict, winStr, myWins, theirWins, point, 1):
+                        # return early if we found a win, because we can just play that
+                        return myWins, [], [], []
+
+        #print("Vertical")
+        # vertical checks
+        for colStart in range(startPoint, startPoint + size):
+            winStr = ""
+            for point in range(colStart, colStart + (size+1)*(size-1) + 1, size+1):
+                winStr += self.getPointRep(self.current_player, point)
+                if len(winStr) == 6:
+                    self.checkThreat(threatDict, winStr, my2mWins, their2mWins, point, size+1)
+                    winStr = winStr[1:]
+                if len(winStr) == 5:
+                    if self.checkWin(winDict, winStr, myWins, theirWins, point, size+1):
+                        # return early if we found a win, because we can just play that
+                        return myWins, [], [], []
+
+        # diagonal I
+        #print("Diag I")
+        exists = size - 5
+        checkRight = startPoint + 1
+        checkDown = startPoint + size + 1
+        dIStarts = [startPoint]
+        for i in range(0, exists):
+            dIStarts.append(checkDown)
+            dIStarts.append(checkRight)
+            checkRight += 1
+            checkDown += size+1
+        dSize = size
+        reduceDSize = True
+        for start in dIStarts:
+            point = start
+            winStr = ""
+            for i in range(0, dSize):
+                winStr += self.getPointRep(self.current_player, point)
+                if len(winStr) == 6:
+                    self.checkThreat(threatDict, winStr, my2mWins, their2mWins, point, size+2)
+                    winStr = winStr[1:]
+                if len(winStr) == 5:
+                    #print(winStr)
+                    if self.checkWin(winDict, winStr, myWins, theirWins, point, size+2):
+                        # return early if we found a win, because we can just play that
+                        return myWins, [], [], []
+
+                point += size+2
+            if reduceDSize:
+                dSize -= 1
+            reduceDSize = not reduceDSize
+
+        # diagonal II
+        #print("diag II")
+        checkLeft = startPoint + (size-1) - 1
+        checkDown = startPoint + (size-1) + (size+1)
+        dIIStarts = [startPoint + size - 1]
+        exists = size - 5
+        for i in range(0, exists):
+            dIIStarts.append(checkLeft)
+            dIIStarts.append(checkDown)
+            checkLeft -= 1
+            checkDown += size+1
+        dSize = size
+        reduceDSize = True
+        for start in dIIStarts:
+            point = start
+            winStr = ""
+            for i in range(0, dSize):
+                winStr += self.getPointRep(self.current_player, point)
+                if len(winStr) == 6:
+                    self.checkThreat(threatDict, winStr, my2mWins, their2mWins, point, size)
+                    winStr = winStr[1:]
+                if len(winStr) == 5:
+                    #print(winStr)
+                    if self.checkWin(winDict, winStr, myWins, theirWins, point, size):
+                        # return early if we found a win, because we can just play that
+                        return myWins, [], [], []
+
+                point += size
+            if reduceDSize:
+                dSize -= 1
+            reduceDSize = not reduceDSize
+
+        return myWins, theirWins, my2mWins, their2mWins
+
+    def get_heuristic_score(self):
+        finished, winner = self.check_game_end_gomoku()
+        if (finished):
+            return WINNER_SCORE if (winner == self.current_player) else -WINNER_SCORE
+        score = 0
+        # TODO
+        return score
+        
+    # returns (score, moveThatCausedScore)
+    def negaAB(self, alpha, beta, d, prev_move):
+        empty_points = self.get_empty_points()
+        #print(self.current_player, empty_points)
+        if (d == 0):
+            # TODO: maybe MCTS sim here?
+            score = self.get_heuristic_score()
+            if (score > self.best_move_score):
+                self.best_move_score = score
+                self.best_move = prev_move
+                if (score == WINNER_SCORE):
+                    return 1, prev_move
+                elif (score == -WINNER_SCORE):
+                    return -1, prev_move
+            return 0, None
+        if len(empty_points) == 0:
+            return 0, None
+        # TODO: sort points based on euclidian distance from prev_move
+        point = empty_points[0]
+
+        myWins, theirWins, my2mWins, their2mWins = self.winDetection()
+        #print("winloseblock:", myWins, theirWins, my2mWins, their2mWins)
+        if len(myWins) > 0:
+            return 1, myWins[0]
+        if len(theirWins) > 1:
+            return -1, theirWins[0] # guaranteed loss because you can't handle more than one threat
+        elif len(theirWins) == 1:
+            if len(their2mWins) > 0:
+                return -1, theirWins[0] # cannot block their two guaranteed win moves
+            # must block this point
+            point = theirWins[0]
+            self.board[point] = self.current_player
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            result = self.negaAB(-beta, -alpha, d-1, point)
+            v = -result[0]
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            self.board[point] = EMPTY
+            return v, point
+        if len(my2mWins) > 0:
+            return 1, my2mWins[0]
+        if len(their2mWins) > 1:
+            return -1, their2mWins[0] # guaranteed loss, you can only block one
+        elif len(their2mWins) == 1:
+            # must block this point
+            point = their2mWins[0]
+            self.board[point] = self.current_player
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            result = self.negaAB(-beta, -alpha, d-1, point)
+            v = -result[0]
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            self.board[point] = EMPTY
+            return v, point
+            
+        while (len(empty_points) != 0):
+            point = empty_points[-1] # O(1) operation
+            empty_points = empty_points[:-1]
+            self.board[point] = self.current_player
+            bstr = ""
+            for i in range(len(self.board)):
+                if (i % (self.size+1) == 0): bstr += "\n"
+                bstr += self.getPointRep(self.current_player, i)
+            #print(bstr)
+            
+            if self.point_check_game_end_gomoku(point): # state.IsTerminal()
+                #print("player", self.current_player, "won", point)
+                self.board[point] = EMPTY
+                return 1, point
+
+            # switch current player
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            result = self.negaAB(-beta, -alpha, d-1, point)
+            v = -result[0]
+            if (v > alpha): alpha = v
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+
+            # set the current player back and restore the empty point
+            self.board[point] = EMPTY
+
+            if (v >= beta): return beta, point
+        return alpha, point
+
+    def get_best_move(self):
+        return self.best_move
+
+    def get_best_move_score(self):
+        return self.best_move_score
+    
+    def set_best_move(self, score, move):
+        self.best_move_score = score
+        self.best_move = move

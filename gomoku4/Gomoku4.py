@@ -42,7 +42,7 @@ class GomokuSimulationPlayer(object):
         #NOTE: pattern has preference, later pattern is ignored if an earlier pattern is found
         self.pattern_list=['Win', 'BlockWin', 'OpenFour', 'BlockOpenFour', 'Random']
 
-        self.name="Gomoku3"
+        self.name="Gomoku4"
         self.version = 3.0
         self.best_move=None
     

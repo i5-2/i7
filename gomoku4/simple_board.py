@@ -718,8 +718,7 @@ class SimpleGoBoard(object):
             elif (pt == EMPTY):
                 right_str += "."
             else:
-                right_str += "?"
-                break
+                right_str += "o"
         d = -d
         p = point
         left_str = ""
@@ -731,19 +730,36 @@ class SimpleGoBoard(object):
             elif (pt == EMPTY):
                 left_str += "."
             else:
-                left_str += "?"
-                break
+                left_str += "o"
         
         string = left_str[::-1] + right_str
         
         score = 0
-        for c in string:
-            if (c == "x"):
+        str_len = len(string)
+        for i in range(0, str_len):
+            if (i + 1 < str_len and string[i] == string[i+1]):
+                ours = string[i] == "x"
+                enemy = string[i] == "o"
+                if (ours):
+                    score += 10
+                elif (enemy):
+                    score -= 10
+                
+                if (i + 2 < str_len and string[i+1] == string[i+2]):
+                    if (ours):
+                        score += 100
+                    elif (enemy):
+                        score -= 100
+                    if (i + 3 and string[i+2] == string[i+3]):
+                        if (ours):
+                            score += 1000
+                        elif (enemy):
+                            score -= 1000
+            elif (string[i] == "x"):
                 score += 1
-            elif (c == "."):
-                score += 0.5
-            elif (c == "?"):
+            elif (string[i] == "o"):
                 score -= 1
+
         return score
     
     def point_check_game_end_gomoku_heur(self, point):
@@ -759,17 +775,11 @@ class SimpleGoBoard(object):
         current_points = where1d(self.board == self.current_player)
         enemy_points = where1d(self.board == GoBoardUtil.opponent(self.current_player))
         
-        temp_score = 0
         for point in current_points:
-            temp_score += self.point_check_game_end_gomoku_heur(point)
-        if (len(current_points) > 0):
-            score = temp_score / len(current_points)
+            score += self.point_check_game_end_gomoku_heur(point)
     
-        temp_score = 0
         for point in enemy_points:
-            temp_score -= 0.4 * self.point_check_game_end_gomoku_heur(point)
-        if (len(enemy_points) > 0):
-            score += temp_score / len(enemy_points)
+            score -= self.point_check_game_end_gomoku_heur(point)
         
         return score
         

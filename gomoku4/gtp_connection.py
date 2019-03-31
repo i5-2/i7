@@ -333,8 +333,10 @@ class GtpConnection():
             self.board=self.sboard
             signal.alarm(0)
         except Exception as e:
-            #Exception
             move=self.board.get_best_move()
+            if (move == PASS):
+                # TODO: just pick a random move
+                pass
 
         if move == PASS:
             self.respond("pass")

@@ -195,5 +195,9 @@ class GoBoardUtil(object):
         for i in range(0, len(board)):
             colour = board[i]
             if (colour != BORDER):
+                print(colour)
+                print(i)
+                print(zobrist)
+                print(zobrist[colour])
                 h = h ^ zobrist[colour][i]
         return h

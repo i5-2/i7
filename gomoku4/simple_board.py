@@ -570,7 +570,10 @@ class SimpleGoBoard(object):
                 if white_flag and not black_flag:
                     white_score += len(empty_block)
 
+        print(str(GoBoardUtil.get_twoD_board(self)))
         print(black_score, white_score)
+        print("!!!")
+        
         #print(self.code())
         if black_score > white_score:
             return BLACK, black_score-white_score

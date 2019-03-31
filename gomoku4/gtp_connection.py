@@ -332,7 +332,7 @@ class GtpConnection():
             #winner, move = GoBoardUtil.solve_gomoku(self.board, color)
             self.board=self.sboard
             signal.alarm(0)
-        except ValueError as e:
+        except Exception as e:
             #Exception
             move=self.board.get_best_move()
             print(e)

@@ -81,7 +81,7 @@ def solve(board):
                 haveDraw=True
             elif (result != -1):
                 if (result > board.get_best_move_score()):
-                    board.set_best_move(score, m)
+                    board.set_best_move(result, m)
     return haveDraw,"NoMove"
 
 

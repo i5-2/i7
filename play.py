@@ -1,8 +1,7 @@
 import pexpect
 
 player1='gomoku4/Gomoku4.py'
-#player2='random_player/Gomoku2.py'
-player2 = "flat_mc_player/Gomoku3.py"
+player2='random_player/Gomoku2.py'
 
 win1=0
 win2=0
@@ -102,5 +101,17 @@ def playGames(numGame=10):
 def outputResult():
     print('player1 win',win1,'player2 win',win2,'draw',draw)
 
-playGames(10)
+def saveResult():
+    f = open("game_results.txt", "w")
+    f.write("player 1: {}\n".format(player1))
+    f.write("player 2: {}\n".format(player2))
+    f.write("player 1 wins {}\n".format(win1))
+    f.write("player 2 wins {}\n".format(win2))
+    f.write("draw {}\n".format(draw))
+    f.close()
+
+playGames(1)
 outputResult()
+saveResult()
+
+

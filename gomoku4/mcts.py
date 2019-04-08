@@ -192,8 +192,7 @@ class MCTS(object):
             return None
         moves_ls = sorted(moves_ls,key=lambda i:i[1],reverse=True)
         move = moves_ls[0]
-        # TODO: comment this out
-        self.print_stat(board, self._root, toplay)
+        #self.print_stat(board, self._root, toplay)
         #self.good_print(board,self._root,self.toplay,10)
         if move[0] == PASS:
             return None

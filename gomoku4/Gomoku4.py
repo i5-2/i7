@@ -39,7 +39,7 @@ def count_at_depth(node, depth, nodesAtDepth):
         count_at_depth(child, depth+1, nodesAtDepth)
 
 class GomokuSimulationPlayer(object):
-    def __init__(self, num_sim, sim_rule, move_filter, in_tree_knowledge, size=7, limit=50, exploration=0.4):
+    def __init__(self, num_sim, sim_rule, move_filter, in_tree_knowledge, size=7, limit=49, exploration=0.5):
         """
         Player that selects a move based on MCTS from the set of legal moves
         """
@@ -97,7 +97,7 @@ def run():
     start the gtp connection and wait for commands.
     """
     board = SimpleGoBoard(7)
-    con = GtpConnection(GomokuSimulationPlayer(2500, "random", False, "None"), board)
+    con = GtpConnection(GomokuSimulationPlayer(6000, "random", False, "None"), board)
     con.start_connection()
 
 if __name__=='__main__':

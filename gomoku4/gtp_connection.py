@@ -332,7 +332,7 @@ class GtpConnection():
             signal.alarm(0)
         except Exception as e:
             print(e)
-            move=self.go_engine.best_move
+            move=GoBoardUtil.generate_random_move_gomoku(self.board)
 
         if move == PASS:
             self.respond("pass")
